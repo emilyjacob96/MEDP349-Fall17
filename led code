@@ -1,0 +1,221 @@
+// defines pins numbers
+const int trigPin = 5;
+const int echoPin =6;
+const int buzzer = 11;
+const int ledPin = 13;
+
+ //led strip
+#define REDPIN 10
+#define GREENPIN 11
+#define BLUEPIN 9
+
+ #define FADESPEED 2     // make this higher to slow down
+ #define FADESPEED1 2
+ 
+// defines variables
+long duration;
+int distance;
+int safetyDistance;
+int speakerPin = 11;
+int length = 28;
+//char notes[] = "GGAGcB, GGAGdc, GGxecBA, yyecdc";
+
+//int beats[] = { 2, 2, 8, 8, 8, 16, 1, 2, 2, 8, 8,8, 16, 1, 2,2,8,8,8,8,16, 1,2,2,8,8,8,16 };
+//
+//int tempo = 150;
+/*
+void playTone(int tone, int duration) {
+
+//for (long i = 0; i < duration * 1000L; i += tone * 2) {
+
+//   digitalWrite(speakerPin, HIGH);
+//
+//   delayMicroseconds(tone);
+//
+//   digitalWrite(speakerPin, LOW);
+//
+//   delayMicroseconds(tone);
+//
+  } 
+
+void playNote(char note, int duration) {
+
+char names[] = {'C', 'D', 'E', 'F', 'G', 'A', 'B',           
+
+                 'c', 'd', 'e', 'f', 'g', 'a', 'b',
+
+                 'x', 'y' };
+  
+int tones[] = {  1915, 1700, 1519, 1432, 1352, 1275, 1136, 1073, 1014, 956, 852, 758};
+                 
+
+
+int SPEE = 5;
+
+// play the tone corresponding to the note name
+
+for (int i = 0; i < 8; i++) {
+
+   if (names[i] == note) {
+    // int newduration = duration/SPEE;
+     playTone(tones[i], duration);
+
+   }
+
+}
+
+}
+*/
+void setup() {
+pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
+pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+//pinMode(buzzer, OUTPUT);
+//pinMode(ledPin, OUTPUT);
+Serial.begin(9600); // Starts the serial communication
+
+  pinMode(REDPIN, OUTPUT);
+  pinMode(GREENPIN, OUTPUT);
+  pinMode(BLUEPIN, OUTPUT);
+}
+
+
+void loop() {
+// pinMode(speakerPin, OUTPUT);
+ int r, g, b;
+
+
+
+
+
+// Clears the trigPin
+digitalWrite(trigPin, LOW);
+delayMicroseconds(2);
+
+// Sets the trigPin on HIGH state for 10 micro seconds
+digitalWrite(trigPin, HIGH);
+delayMicroseconds(10);
+digitalWrite(trigPin, LOW);
+
+// Reads the echoPin, returns the sound wave travel time in microseconds
+duration = pulseIn(echoPin, HIGH);
+
+// Calculating the distance
+distance= duration*0.0010/2;
+
+safetyDistance = distance;
+if (safetyDistance <= 2){
+/*  
+// Happy Birthday song
+for (int i = 0; i < length; i++) {
+   if (notes[i] == ' ') {
+     delay(beats[i] * tempo); // rest
+   } else {
+     playNote(notes[i], beats[i] * tempo);
+   }
+
+  digitalWrite(buzzer, HIGH);
+  digitalWrite(ledPin, HIGH);
+}
+*/
+//lights 
+ // fade from blue to violet
+  for (r = 0; r < 256; r++) { 
+        if (safetyDistance >=3) {
+      break;
+      }
+    analogWrite(REDPIN, r);
+    delay(FADESPEED1);
+
+  } 
+    // fade from violet to red
+  for (b = 255; b > 0; b--) { 
+        if (safetyDistance >=3) {
+      break;
+      }
+    analogWrite(BLUEPIN, b);
+    delay(FADESPEED1);
+
+  }
+ 
+  // fade from red to yellow
+  for (g = 0; g < 256; g++) { 
+        if (safetyDistance >=3) {
+      break;
+      }
+    analogWrite(GREENPIN, g);
+    delay(FADESPEED1);
+
+  } 
+   // fade from yellow to green
+  for (r = 255; r > 0; r--) { 
+        if (safetyDistance >=3) {
+      break;
+      }
+    analogWrite(REDPIN, r);
+    delay(FADESPEED1);
+
+  } 
+  // fade from green to teal
+  for (b = 0; b < 256; b++) { 
+        if (safetyDistance >=3) {
+      break;
+      }
+    analogWrite(BLUEPIN, b);
+    delay(FADESPEED1);
+
+  } 
+      // fade from teal to blue
+  for (g = 255; g > 0; g--) { 
+        if (safetyDistance >=3) {
+      break;
+      }
+    analogWrite(GREENPIN, g);
+    delay(FADESPEED1);
+
+  }
+
+
+  
+ 
+}
+else if ((safetyDistance <= 3) && (safetyDistance >2)){
+
+      analogWrite(REDPIN, 0);
+    analogWrite(BLUEPIN, 0);
+    analogWrite(GREENPIN, 255);
+  
+  }
+  else if ((safetyDistance <= 4) && (safetyDistance >3)){
+
+      analogWrite(REDPIN, 255);
+    analogWrite(BLUEPIN, 0);
+    analogWrite(GREENPIN, 0);
+  
+  }
+else{
+    analogWrite(REDPIN, 0);
+    analogWrite(BLUEPIN, 0);
+    analogWrite(GREENPIN, 0);
+ 
+  
+
+  //digitalWrite(buzzer, LOW);
+  //digitalWrite(ledPin, LOW);
+}
+
+// Prints the distance on the Serial Monitor
+Serial.print("Distance: ");
+Serial.println(distance);
+
+
+Serial.print("Duration: ");
+Serial.println(duration);
+
+ }
+
+
+
+
+
+
+
